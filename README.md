@@ -49,37 +49,38 @@ A complete, fully functional e-learning web application where **students** can e
 ---
 
 ## 🗂️ Project Structure
-elearning-platform/
-├── index.html # Landing page
-├── student-dashboard.html
-├── teacher-dashboard.html
-├── login.html
-├── register.html
-├── my-courses.html
-├── assignments.html
-├── quiz.html
-├── watch-videos.html
-├── student-chat.html
-├── teacher-chat.html
-├── teacher-chat-conversation.html
-├── add-course.html
-├── upload-video.html
-├── create-assignment.html
-├── create-quiz.html
-├── style.css
-├── script.js
-├── captcha.php # Generate CAPTCHA image
-├── api/ # Backend API endpoints
-│ ├── config.php # Database connection (do not commit real password)
-│ ├── auth.php
-│ ├── courses.php
-│ ├── enroll.php
-│ ├── assignments.php
-│ ├── quizzes.php
-│ ├── videos.php
-│ └── chat.php
-└── uploads/ # student assignment submissions
-
+.
+└── elearning-platform/
+    ├── index.html
+    ├── student-dashboard.html
+    ├── teacher-dashboard.html
+    ├── login.html
+    ├── register.html
+    ├── my-courses.html
+    ├── assignments.html
+    ├── quiz.html
+    ├── watch-videos.html
+    ├── student-chat.html
+    ├── teacher-chat.html
+    ├── teacher-chat-conversation.html
+    ├── add-course.html
+    ├── upload-video.html
+    ├── create-assignment.html
+    ├── create-quiz.html
+    ├── style.css
+    ├── script.js
+    ├── captcha.php
+    ├── api/
+    │   ├── config.php
+    │   ├── auth.php
+    │   ├── courses.php
+    │   ├── enroll.php
+    │   ├── assignments.php
+    │   ├── quizzes.php
+    │   ├── videos.php
+    │   └── chat.php
+    └── uploads/
+        └── assignments
 
 ---
 
