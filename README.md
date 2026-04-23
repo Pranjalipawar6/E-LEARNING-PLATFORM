@@ -3,7 +3,7 @@
 A complete, fully functional e-learning web application where **students** can enroll in courses, watch video lectures, submit assignments, attempt quizzes, and chat with instructors.  
 **Teachers** can create courses, upload YouTube video lessons, post assignments, design quizzes, and reply to student messages.
 
-> Built with PHP, MySQL, HTML/CSS/JS, and a responsive modern UI.
+> Built with PHP, MySQL, HTML/CSS/JS, and a responsive modern UI..
 
 ---
 
