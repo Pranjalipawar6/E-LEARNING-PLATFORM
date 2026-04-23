@@ -210,8 +210,8 @@ CREATE TABLE messages (
       <?php
       $host = 'localhost';
       $dbname = 'elearning_db';
-      $username = 'root';     // your MySQL username
-      $password = '';         // your MySQL password
+      $username = 'your MySQL username';     // your MySQL username
+      $password = 'your MySQL password';         // your MySQL password
       // ... rest of the code (PDO connection)
 
 5 Make sure uploads folder is writable
