@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    /* (keep your existing styles exactly as they are) */
+    body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#f4f6fb;
+    }
+    .container{
+    padding:30px;
+    }
+    .page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    }
+    .page-header h2{
+    color:#333;
+    }
+    .back-btn{
+    text-decoration:none;
+    background:#4361ee;
+    color:white;
+    padding:8px 16px;
+    border-radius:8px;
+    transition:0.3s;
+    }
+    .back-btn:hover{
+    background:#3f37c9;
+    }
+    .assignment-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    }
+    .assignment-info h3{
+    margin:0;
+    color:#333;
+    }
+    .assignment-info p{
+    margin:5px 0;
+    color:#777;
+    font-size:14px;
+    }
+    .status{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    }
+    .pending{
+    background:#fff3cd;
+    color:#ff9800;
+    }
+    .submitted{
+    background:#d4edda;
+    color:#28a745;
+    }
+    .upload-box input{
+    margin-bottom:8px;
+    }
+    .btn{
+    background:#4361ee;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+    }
+    .btn:hover{
+    background:#3f37c9;
+    }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h2>Assignments</h2>
+                <a href="student-dashboard.html" class="back-btn">⬅ Back</a>
+            </div>
+            <!-- assignments will load here -->
+        </div>
+        <script>
+            async function loadAssignments() {
+                // FIX: use api/ prefix
+                const res = await fetch('api/assignments.php');
+                const assignments = await res.json();
+                const container = document.querySelector('.container');
+                if (!assignments.length) {
+                    container.innerHTML += '<p class="no-results">No assignments found.</p>';
+                    return;
+                }
+                const html = assignments.map(ass => `
+                    <div class="assignment-card">
+                        <div class="assignment-info">
+                            <h3>${ass.title}</h3>
+                            <p>Course: ${ass.course_title}</p>
+                            <p>Due: ${new Date(ass.due_date).toLocaleDateString()}</p>
+                            <span class="status ${ass.submission_status ? 'submitted' : 'pending'}">${ass.submission_status ? 'Submitted' : 'Pending'}</span>
+                        </div>
+                        ${!ass.submission_status ? `
+                        <div class="upload-box">
+                            <input type="file" id="file_${ass.id}">
+                            <button class="btn" onclick="submitAssignment(${ass.id})">Submit</button>
+                        </div>` : '<span class="status submitted">✓ Completed</span>'}
+                    </div>
+                `).join('');
+                container.innerHTML = `<div class="page-header"><h2>Assignments</h2><a href="student-dashboard.html" class="back-btn">⬅ Back</a></div>${html}`;
+            }
+           async function submitAssignment(id) {
+                const fileInput = document.getElementById(`file_${id}`);
+                const file = fileInput.files[0];
+                if (!file) return alert('Select a file');
+
+                const formData = new FormData();
+                formData.append('action', 'submit');
+                formData.append('assignment_id', id);
+                formData.append('assignment_file', file);
+
+                const res = await fetch('api/assignments.php', {
+                    method: 'POST',
+                    body: formData   // no Content-Type header – browser sets multipart boundary
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Assignment submitted!');
+                    location.reload();
+                } else {
+                    alert('Submission failed: ' + (data.message || 'Unknown error'));
+                }
+            }
+            document.addEventListener('DOMContentLoaded', loadAssignments);
+        </script>
+    </body>
+</html>

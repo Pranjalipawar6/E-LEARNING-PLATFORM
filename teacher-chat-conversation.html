@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Conversation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chat-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1200px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .students-sidebar {
+            background: #f8f9fa;
+            border-right: 1px solid #eee;
+            padding: 20px;
+        }
+        .students-sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .student-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .student-item:hover {
+            background: #e9ecef;
+        }
+        .student-item.active {
+            background: #4361ee;
+            color: white;
+        }
+        .student-item i {
+            font-size: 18px;
+        }
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background: white;
+        }
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.sent {
+            align-items: flex-end;
+        }
+        .message.received {
+            align-items: flex-start;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+        }
+        .sent .message-bubble {
+            background: #4361ee;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .received .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-bottom-left-radius: 5px;
+        }
+        .message-sender {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #666;
+        }
+        .message-time {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 25px;
+        }
+        .chat-input-area select {
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 25px;
+            min-width: 150px;
+        }
+        .chat-input-area button {
+            padding: 12px 25px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px;
+            color: #4361ee;
+            text-decoration: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <a href="teacher-chat.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Courses</a>
+    <div class="chat-layout">
+        <div class="students-sidebar">
+            <h3><i class="fas fa-users"></i> Students</h3>
+            <div id="studentsList">Loading students...</div>
+        </div>
+        <div class="chat-area">
+            <div class="chat-header">
+                <h3 id="courseTitle">Loading course...</h3>
+                <p id="selectedStudentInfo">Select a student from the left to start chatting</p>
+            </div>
+            <div class="messages-area" id="messagesArea">
+                <div class="no-messages" style="text-align:center; padding:40px;">Select a student to view conversation</div>
+            </div>
+            <div class="chat-input-area">
+                <select id="studentSelect" style="display:none;"></select>
+                <input type="text" id="messageInput" placeholder="Type your reply..." autocomplete="off">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('course_id');
+        let currentStudentId = null;
+        let pollInterval = null;
+        let studentsList = [];
+
+        if (!courseId) {
+            alert('No course specified');
+            window.location.href = 'teacher-chat.html';
+        }
+
+        async function loadCourseInfo() {
+            try {
+                const res = await fetch(`api/courses.php`);
+                const courses = await res.json();
+                const course = courses.find(c => c.id == courseId);
+                if (course) {
+                    document.getElementById('courseTitle').innerHTML = `<i class="fas fa-book"></i> ${escapeHtml(course.title)}`;
+                }
+            } catch (err) {}
+        }
+
+        async function loadStudents() {
+            try {
+                const res = await fetch(`api/chat.php?course_id=${courseId}`);
+                const students = await res.json();
+                if (students.error) {
+                    document.getElementById('studentsList').innerHTML = `<p class="no-results">${students.error}</p>`;
+                    return;
+                }
+                studentsList = students;
+                const container = document.getElementById('studentsList');
+                if (students.length === 0) {
+                    container.innerHTML = '<p class="no-results">No student messages yet.</p>';
+                    return;
+                }
+                container.innerHTML = students.map(student => `
+                    <div class="student-item" data-student-id="${student.student_id}" onclick="selectStudent(${student.student_id}, '${escapeHtml(student.student_name)}')">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>${escapeHtml(student.student_name)}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadMessages(studentId) {
+            if (!studentId) return;
+            try {
+                const res = await fetch(`api/chat.php?course_id=${courseId}&student_id=${studentId}`);
+                const messages = await res.json();
+                if (messages.error) {
+                    document.getElementById('messagesArea').innerHTML = `<div class="no-messages">${messages.error}</div>`;
+                    return;
+                }
+                const currentUserId = localStorage.getItem('userId');
+                const area = document.getElementById('messagesArea');
+                if (messages.length === 0) {
+                    area.innerHTML = '<div class="no-messages">No messages yet. Send a reply!</div>';
+                    return;
+                }
+                area.innerHTML = messages.map(msg => {
+                    const isSent = msg.sender_id == currentUserId;
+                    const senderName = isSent ? 'You (Teacher)' : msg.sender_name;
+                    const time = new Date(msg.timestamp).toLocaleString();
+                    return `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            <div class="message-sender">${escapeHtml(senderName)}</div>
+                            <div class="message-bubble">
+                                ${escapeHtml(msg.message)}
+                                <div class="message-time">${time}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                area.scrollTop = area.scrollHeight;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function sendMessage() {
+            if (!currentStudentId) {
+                alert('Please select a student first');
+                return;
+            }
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            try {
+                const res = await fetch('api/chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        course_id: courseId, 
+                        message: message,
+                        student_id: currentStudentId
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    input.value = '';
+                    loadMessages(currentStudentId);
+                } else {
+                    alert(data.error || 'Failed to send message');
+                }
+            } catch (err) {
+                alert('Error sending message');
+            }
+        }
+
+        function selectStudent(studentId, studentName) {
+            currentStudentId = studentId;
+            document.getElementById('selectedStudentInfo').innerHTML = `<i class="fas fa-user"></i> Chatting with: <strong>${escapeHtml(studentName)}</strong>`;
+            // Highlight active student
+            document.querySelectorAll('.student-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-student-id') == studentId) {
+                    el.classList.add('active');
+                }
+            });
+            loadMessages(studentId);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialization
+        loadCourseInfo();
+        loadStudents().then(() => {
+            // Auto-select first student if any
+            if (studentsList.length > 0) {
+                selectStudent(studentsList[0].student_id, studentsList[0].student_name);
+            }
+        });
+
+        // Auto-refresh messages every 3 seconds if a student is selected
+        pollInterval = setInterval(() => {
+            if (currentStudentId) {
+                loadMessages(currentStudentId);
+            }
+        }, 3000);
+
+        // Send on Enter
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (pollInterval) clearInterval(pollInterval);
+        });
+    </script>
+</body>
+</html>

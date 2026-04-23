@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Create Assignment</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body{
+background: linear-gradient(135deg,#4361ee,#4cc9f0);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* Card */
+.page-container{
+width:100%;
+max-width:520px;
+background: rgba(255,255,255,0.96);
+padding:40px;
+border-radius:20px;
+box-shadow:0 25px 60px rgba(0,0,0,0.25);
+animation: slideUp 0.6s ease;
+}
+
+/* Heading */
+.page-container h2{
+text-align:center;
+margin-bottom:25px;
+font-size:28px;
+color:#333;
+}
+
+/* Inputs */
+.page-container input{
+width:100%;
+padding:14px;
+margin-bottom:18px;
+border:2px solid #eee;
+border-radius:12px;
+font-size:15px;
+transition:0.3s;
+}
+
+/* Focus */
+.page-container input:focus{
+border-color:#4361ee;
+box-shadow:0 0 0 4px rgba(67,97,238,0.2);
+outline:none;
+transform:scale(1.02);
+}
+
+/* Button */
+.page-container button{
+width:100%;
+padding:14px;
+font-size:16px;
+border:none;
+border-radius:12px;
+background: linear-gradient(135deg,#4361ee,#3f37c9);
+color:white;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
+letter-spacing:0.5px;
+}
+
+/* Hover */
+.page-container button:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 30px rgba(0,0,0,0.25);
+}
+
+/* Back Link */
+.page-container a{
+display:block;
+text-align:center;
+margin-top:15px;
+text-decoration:none;
+color:#4361ee;
+font-weight:600;
+transition:0.3s;
+}
+
+.page-container a:hover{
+color:#3f37c9;
+text-decoration:underline;
+}
+
+/* Animation */
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translateY(50px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.page-container textarea{
+width:100%;
+padding:14px;
+margin-bottom:18px;
+border:2px solid #eee;
+border-radius:12px;
+font-size:15px;
+transition:0.3s;
+resize:none;
+height:120px;
+}
+
+.page-container textarea:focus{
+border-color:#4125f7;
+box-shadow:0 0 0 4px rgba(247,37,133,0.2);
+outline:none;
+}
+</style>
+<body>
+
+<div class="page-container">
+
+<h2>Create Assignment</h2>
+
+<input type="text" id="assignmentCourse" placeholder="Course Name">
+
+<input type="text" id="assignmentTitle" placeholder="Assignment Title">
+
+<textarea id="assignmentDesc" placeholder="Assignment Description"></textarea>
+
+<input type="date" id="assignmentDue">
+
+<button class="btn btn-primary" onclick="createAssignment()">Create Assignment</button>
+
+<br><br> <a href="teacher-dashboard.html">⬅ Back to Dashboard</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

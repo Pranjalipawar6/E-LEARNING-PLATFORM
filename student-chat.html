@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Instructor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chat-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #4361ee, #3f37c9);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h2 {
+            margin: 0;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+        }
+        .messages-area {
+            height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.sent {
+            align-items: flex-end;
+        }
+        .message.received {
+            align-items: flex-start;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+        }
+        .sent .message-bubble {
+            background: #4361ee;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .received .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-bottom-left-radius: 5px;
+        }
+        .message-sender {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #666;
+        }
+        .message-time {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+        .chat-input-area button {
+            padding: 12px 25px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .no-messages {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2><i class="fas fa-comments"></i> Chat with Instructor</h2>
+            <a href="my-courses.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Courses</a>
+        </div>
+        <div class="messages-area" id="messagesArea">
+            <div class="no-messages">Loading messages...</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('course_id');
+        let pollInterval = null;
+
+        if (!courseId) {
+            alert('No course specified');
+            window.location.href = 'my-courses.html';
+        }
+
+        async function loadMessages() {
+            try {
+                const res = await fetch(`api/chat.php?course_id=${courseId}`);
+                const messages = await res.json();
+                
+                if (messages.error) {
+                    document.getElementById('messagesArea').innerHTML = `<div class="no-messages">${messages.error}</div>`;
+                    return;
+                }
+
+                const area = document.getElementById('messagesArea');
+                if (messages.length === 0) {
+                    area.innerHTML = '<div class="no-messages">No messages yet. Start the conversation!</div>';
+                    return;
+                }
+
+                // Get current user ID from localStorage (set during login)
+                const currentUserId = localStorage.getItem('userId');
+                
+                area.innerHTML = messages.map(msg => {
+                    const isSent = msg.sender_id == currentUserId;
+                    const senderName = isSent ? 'You' : msg.sender_name;
+                    const time = new Date(msg.timestamp).toLocaleString();
+                    return `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            <div class="message-sender">${senderName}</div>
+                            <div class="message-bubble">
+                                ${escapeHtml(msg.message)}
+                                <div class="message-time">${time}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Scroll to bottom
+                area.scrollTop = area.scrollHeight;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            try {
+                const res = await fetch('api/chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ course_id: courseId, message: message })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    input.value = '';
+                    loadMessages();
+                } else {
+                    alert(data.error || 'Failed to send message');
+                }
+            } catch (err) {
+                alert('Error sending message');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initial load
+        loadMessages();
+        // Auto-refresh every 3 seconds
+        pollInterval = setInterval(loadMessages, 3000);
+
+        // Send on Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Cleanup interval on page unload
+        window.addEventListener('beforeunload', () => {
+            if (pollInterval) clearInterval(pollInterval);
+        });
+    </script>
+</body>
+</html>

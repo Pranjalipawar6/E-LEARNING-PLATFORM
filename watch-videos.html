@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch Videos</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* keep your existing styles – unchanged */
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:#f4f6fb;
+}
+.video-page{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:25px;
+padding:30px;
+}
+.video-player{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+.video-player iframe{
+width:100%;
+height:420px;
+border-radius:10px;
+}
+.video-title{
+margin-top:15px;
+font-size:22px;
+color:#333;
+}
+.playlist{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+height:500px;
+overflow-y:auto;
+}
+.lecture{
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+display:flex;
+gap:10px;
+align-items:center;
+transition:0.3s;
+}
+.lecture:hover{
+background:#eef1ff;
+}
+.lecture.active{
+background:#4361ee;
+color:white;
+}
+.lecture i{
+font-size:18px;
+}
+.page-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px 0;
+}
+.back-btn{
+text-decoration:none;
+background:#4361ee;
+color:white;
+padding:8px 15px;
+border-radius:8px;
+transition:0.3s;
+}
+.back-btn:hover{
+background:#3f37c9;
+}
+@media(max-width:900px){
+.video-page{
+grid-template-columns:1fr;
+}
+.video-player iframe{
+height:250px;
+}
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+    <h2>Watch Lecture</h2>
+    <a href="student-dashboard.html" class="back-btn">⬅ Back</a>
+</div>
+<div class="video-page">
+    <div class="video-player">
+        <iframe id="mainVideo" src="" frameborder="0" allowfullscreen></iframe>
+        <div class="video-title" id="videoTitle"></div>
+    </div>
+    <!-- FIX: added id="playlist" -->
+    <div class="playlist" id="playlist"></div>
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get('course_id');
+    if (courseId) {
+        loadVideos(courseId);
+    }
+    async function loadVideos(cid) {
+        // FIX: use api/ prefix
+        const res = await fetch(`api/videos.php?course_id=${cid}`);
+        const videos = await res.json();
+        const playlistDiv = document.getElementById('playlist');
+        if (!videos.length) {
+            playlistDiv.innerHTML = '<p>No videos uploaded yet.</p>';
+            return;
+        }
+        playlistDiv.innerHTML = videos.map((v, idx) => `
+            <div class="lecture ${idx===0?'active':''}" onclick="playVideo('${getYoutubeId(v.youtube_url)}','${v.title}',this)">
+                <i class="fas fa-play-circle"></i> ${v.title}
+            </div>
+        `).join('');
+        if (videos[0]) {
+            playVideo(getYoutubeId(videos[0].youtube_url), videos[0].title, document.querySelector('.lecture'));
+        }
+    }
+    function getYoutubeId(url) {
+        const match = url.match(/(?:youtube\.com\/embed\/|youtu\.be\/|v=)([^&?#]+)/);
+        return match ? match[1] : url;
+    }
+    function playVideo(id, title, el) {
+        document.getElementById('mainVideo').src = `https://www.youtube.com/embed/${id}`;
+        document.getElementById('videoTitle').innerText = title;
+        document.querySelectorAll('.lecture').forEach(l => l.classList.remove('active'));
+        el.classList.add('active');
+    }
+</script>
+</body>
+</html>

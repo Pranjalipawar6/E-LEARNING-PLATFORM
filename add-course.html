@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add New Course</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.page-container{
+max-width:600px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.page-container h2{
+margin-bottom:20px;
+}
+
+.page-container input{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+body{
+    background: linear-gradient(135deg,#0f5fa1,#0f5fa1);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Main Card */
+.page-container{
+    width:100%;
+    max-width:520px;
+    background: rgba(255,255,255,0.95);
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.2);
+    animation: fadeIn 0.6s ease;
+}
+
+/* Heading */
+.page-container h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:28px;
+    color:#333;
+}
+
+/* Inputs */
+.page-container input{
+    width:100%;
+    padding:14px;
+    margin-bottom:18px;
+    border:2px solid #eee;
+    border-radius:12px;
+    font-size:15px;
+    transition:0.3s;
+}
+
+/* Input Focus Animation */
+.page-container input:focus{
+    border-color:#4361ee;
+    box-shadow:0 0 0 4px rgba(67,97,238,0.15);
+    outline:none;
+    transform:scale(1.02);
+}
+
+/* Button */
+.page-container button{
+    width:100%;
+    padding:14px;
+    font-size:16px;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(135deg,#4361ee,#3f37c9);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:600;
+    letter-spacing:0.5px;
+}
+
+/* Button Hover */
+.page-container button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 25px rgba(0,0,0,0.2);
+}
+
+/* Back Link */
+.page-container a{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    text-decoration:none;
+    color:#4361ee;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.page-container a:hover{
+    color:#3f37c9;
+    text-decoration:underline;
+}
+
+/* Animation */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="page-container">
+
+<h2>Add New Course</h2>
+
+<input type="text" id="courseTitle" placeholder="Course Title">
+
+<input type="text" id="courseInstructor" placeholder="Instructor Name">
+
+<input type="number" id="coursePrice" placeholder="Course Price">
+
+<input type="text" id="courseImage" placeholder="Thumbnail Image URL">
+
+<button class="btn btn-primary" onclick="addCourse()">Add Course</button>
+
+<br><br>
+
+<a href="teacher-dashboard.html">⬅ Back to Dashboard</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

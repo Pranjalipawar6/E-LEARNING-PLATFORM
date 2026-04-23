@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Courses</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:25px; margin-top:20px; }
+        .course-card { background:white; border-radius:15px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+        .course-card img { width:100%; height:160px; object-fit:cover; }
+        .course-content { padding:20px; }
+        .progress-bar { height:8px; background:#eee; border-radius:10px; margin:10px 0; }
+        .progress { height:100%; background:linear-gradient(90deg,#4361ee,#4cc9f0); width:0%; border-radius:10px; }
+        .btn { display:inline-block; background:#4361ee; color:white; padding:8px 16px; border-radius:8px; text-decoration:none; border:none; cursor:pointer; font-size:14px; }
+        .container { padding:30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>My Courses</h2>
+            <a href="student-dashboard.html" class="btn">⬅ Back</a>
+        </div>
+        <div class="course-grid" id="myCoursesGrid"></div>
+    </div>
+    <script>
+        async function loadMyCourses() {
+            const res = await fetch('api/enroll.php');
+            const data = await res.json();
+            const grid = document.getElementById('myCoursesGrid');
+            if (data.courses && data.courses.length) {
+                grid.innerHTML = data.courses.map(c => `
+                    <div class="course-card">
+                        <img src="${c.image_url || 'https://via.placeholder.com/300x200'}">
+                        <div class="course-content">
+                            <h3>${c.title}</h3>
+                            <p>${c.instructor}</p>
+                            <div class="progress-bar"><div class="progress" style="width: ${c.progress || 0}%"></div></div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                                <a href="watch-videos.html?course_id=${c.id}" class="btn">Continue</a>
+                                <button onclick="markCourseComplete(${c.id})" class="btn" style="background:#28a745;">Mark Complete</button>
+                                <button onclick="unenrollCourse(${c.id})" class="btn" style="background:#dc3545;">Unenroll</button>
+                                <a href="student-chat.html?course_id=${c.id}">Chat</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                grid.innerHTML = '<p class="no-results">No courses enrolled yet. <a href="index.html#courses">Browse Courses</a></p>';
+            }
+        }
+
+        async function markCourseComplete(courseId) {
+            const res = await fetch('api/enroll.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ course_id: courseId, progress: 100 })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Course marked as complete!');
+                location.reload();
+            } else {
+                alert('Failed to update');
+            }
+        }
+
+        // ✅ Unenroll function defined directly here
+        async function unenrollCourse(courseId) {
+            if (!confirm('Are you sure you want to unenroll? Your progress will be lost.')) return;
+            try {
+                const res = await fetch('api/enroll.php', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ course_id: courseId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('You have been unenrolled from the course.');
+                    location.reload();
+                } else {
+                    alert('Failed to unenroll: ' + (data.message || 'Unknown error'));
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMyCourses);
+    </script>
+</body>
+</html>

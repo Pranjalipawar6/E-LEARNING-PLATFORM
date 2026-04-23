@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - E-Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>E-Learning</h2>
+                <p>Student Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="student-dashboard.html" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="my-courses.html">
+                    <i class="fas fa-book"></i>
+                    <span>My Courses</span>
+                </a>
+                <a href="watch-video.html">
+                    <i class="fas fa-video"></i>
+                    <span>Watch Videos</span>
+                </a>
+                <!--<a href="#">
+                    <i class="fas fa-download"></i>
+                    <span>Download Notes</span>
+                </a>-->
+                <a href="assignments.html">
+                    <i class="fas fa-tasks"></i>
+                    <span>Assignments</span>
+                </a>
+                <a href="quiz.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quizzes</span>
+                </a>
+               
+                <a href="#" class="logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User" id="userAvatar">
+                    <div>
+                        <h4 id="userName">John Doe</h4>
+                        <p>Student</p>
+                    </div>
+                </div>
+                    <div> 
+                       
+                    </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1>Welcome, <span id="welcomeName"></span>!</h1>
+                <p>Track your learning progress and continue where you left off</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+
+            <!-- Quick Actions -->
+             
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+
+                <div class="quick-grid">
+
+                    <a href="my-courses.html" class="quick-card">
+                        <i class="fas fa-book"></i>
+                        <h3>My Courses</h3>
+                        <p>View enrolled courses</p>
+                    </a>
+
+                   <!-- <a href="watch-videos.html" class="quick-card">
+                        <i class="fas fa-video"></i>
+                        <h3>Watch Videos</h3>
+                        <p>Continue lectures</p>
+                    </a>-->
+
+                    <a href="assignments.html" class="quick-card">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Assignments</h3>
+                        <p>Submit & track work</p>
+                    </a>
+
+                    <a href="quiz.html" class="quick-card">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>Quiz</h3>
+                        <p>Attempt quizzes</p>
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- Continue Learning -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Continue Learning</h2>
+                    <a href="#" class="view-all">View All Courses</a>
+                </div>
+                <div class="course-progress-list" id="enrolledCourses">
+                    <!-- Dynamically populated by JavaScript -->
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                <!-- Upcoming Assignments -->
+                <section class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Upcoming Assignments</h3>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="assignment-list" id="assignmentList">
+                        <!-- Dynamically populated by JavaScript -->
+                    </div>
+                </section>
+
+                <section class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Recent Quizzes</h3>
+                        <a href="quiz.html" class="view-all">View All</a>
+                    </div>
+                    <div class="quiz-list" id="quizList">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- Recommended Courses -->
+                <section class="dashboard-card full-width">
+                    <div class="card-header">
+                        <h3>Recommended For You</h3>
+                        <a href="#" class="view-all">Browse All</a>
+                    </div>
+                    <div class="recommended-grid" id="recommendedCourses">
+                        <!-- Dynamically populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

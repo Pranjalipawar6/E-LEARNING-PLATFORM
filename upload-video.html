@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Upload Video</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body{
+background: linear-gradient(135deg,#4cc9f0,#4361ee);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* Main Card */
+.page-container{
+width:100%;
+max-width:520px;
+background: rgba(255,255,255,0.96);
+padding:40px;
+border-radius:20px;
+box-shadow:0 30px 70px rgba(0,0,0,0.25);
+animation: slideUp 0.6s ease;
+}
+
+/* Heading */
+.page-container h2{
+text-align:center;
+margin-bottom:25px;
+font-size:28px;
+color:#333;
+}
+
+/* Inputs */
+.page-container input{
+width:100%;
+padding:14px;
+margin-bottom:18px;
+border:2px solid #eee;
+border-radius:12px;
+font-size:15px;
+transition:0.3s;
+}
+
+/* Focus Effect */
+.page-container input:focus{
+border-color:#4cc9f0;
+box-shadow:0 0 0 4px rgba(76,201,240,0.2);
+outline:none;
+transform:scale(1.02);
+}
+
+/* Button */
+.page-container button{
+width:100%;
+padding:14px;
+font-size:16px;
+border:none;
+border-radius:12px;
+background: linear-gradient(135deg,#4cc9f0,#4361ee);
+color:white;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
+letter-spacing:0.5px;
+}
+
+/* Hover */
+.page-container button:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 30px rgba(0,0,0,0.25);
+}
+
+/* Back Link */
+.page-container a{
+display:block;
+text-align:center;
+margin-top:15px;
+text-decoration:none;
+color:#4361ee;
+font-weight:600;
+transition:0.3s;
+}
+
+.page-container a:hover{
+color:#3f37c9;
+text-decoration:underline;
+}
+
+/* Animation */
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translateY(50px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+</style>
+<body>
+
+<div class="page-container">
+
+<h2>Upload Video Lecture</h2>
+
+<input type="text" id="videoTitle" placeholder="Video Title"><br><br>
+
+<input type="text" id="videoCourse" placeholder="Course Name"><br><br>
+
+<input type="text" id="videoUrl" placeholder="YouTube Video URL"><br><br>
+
+<button class="btn btn-primary" onclick="uploadVideo()">Upload Video</button>
+
+<br><br> <a href="teacher-dashboard.html"> Back to Dashboard</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

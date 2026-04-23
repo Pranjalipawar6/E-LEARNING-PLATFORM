@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - E-Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>E-Learning</h2>
+                <p>Teacher Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="teacher-chat.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Course Chats</span>
+                </a>
+                <a href="teacher-dashboard.html" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="add-course.html">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Course</span>
+                </a>
+                <a href="upload-video.html">
+                    <i class="fas fa-video"></i>
+                    <span>Upload Video</span>
+                </a>
+                
+                <a href="create-assignment.html">
+                    <i class="fas fa-tasks"></i>
+                    <span>Create Assignment</span>
+                </a>
+                <a href="create-quiz.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Create Quiz</span>
+                </a>
+                <!--<a href="#">
+                    <i class="fas fa-users"></i>
+                    <span>View Students</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Check Assignments</span>
+                </a>-->
+                
+                <a href="#" class="logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User" id="userAvatar">
+                    <div>
+                        <h4 id="userName"></h4>
+                        <p>Teacher</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1>Welcome, <span id="welcomeName"> and <span id="userName">!</h1>
+                <p>Manage your courses and track student progress</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="teacherStats">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+
+            <!-- Quick Actions -->
+            <section class="dashboard-section">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions-grid">
+                   <a href="add-course.html" class="quick-action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Add New Course</h3>
+                         <p>Create a new course</p>
+                    </a>
+                    <a href="upload-video.html" class="quick-action-card">
+                        <i class="fas fa-video"></i>
+                        <h3>Upload Video</h3>
+                        <p>Add lecture videos</p>
+                    </a>
+                    <a href="create-assignment.html" class="quick-action-card">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Create Assignment</h3>
+                        <p>Post new assignments</p>
+                    </a>
+                    <a href="create-quiz.html" class="quick-action-card">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>Create Quiz</h3>
+                        <p>Add interactive quizzes</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Recent Courses -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Courses</h2>
+                    <a href="#" class="view-all">Manage All Courses</a>
+                </div>
+                <div class="courses-table-container">
+                    <table class="courses-table">
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Students</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherCourses">
+                            <!-- Dynamically populated by JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <!-- Assignments Management Section -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h2>Manage Assignments</h2>
+                        </div>
+                        <div class="courses-table-container">
+                            <table class="courses-table">
+                                <thead>
+                                    <tr><th>Assignment Title</th><th>Course</th><th>Due Date</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody id="teacherAssignmentsList">
+                                    <tr><td colspan="4">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <!-- Pending Submissions 
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Pending Submissions</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="submissions-list" id="pendingSubmissions">
+                    Dynamically populated by JavaScript 
+                </div>
+            </section>-->
+        
+            <!-- Analytics Overview 
+            <section class="dashboard-section">
+                <h2>Analytics Overview</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Student Engagement</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-line"></i>
+                            <p>Weekly active students</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Course Performance</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Average completion rate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>   -->
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
