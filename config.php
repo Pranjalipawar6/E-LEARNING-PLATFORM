@@ -13,8 +13,8 @@ session_start();
 
 $host = 'localhost';
 $dbname = 'elearning_db';
-$username = 'root';
-$password = '';
+$username = 'your_db_username';
+$password = 'your_db_password';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
